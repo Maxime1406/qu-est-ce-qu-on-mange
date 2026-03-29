@@ -1,62 +1,83 @@
-const platsRapides = [
-    "Steak haché et Pâtes au beurre", "Poulet rôti et Pommes de terre sautées",
-    "Filet de lieu noir et Riz blanc", "Omelette aux champignons",
-    "Côtes de porc et Lentilles", "Spaghetti Bolognaise",
-    "Jambon blanc et Purée maison", "Saucisses et Purée de pois cassés",
-    "Escalope de dinde à la crème", "Croque-monsieur et Salade",
-    "Pâtes à la Carbonara", "Salade composée (Thon, Maïs, Œufs)",
-    "Poisson pané et Épinards", "Steak frites et Salade",
-    "Quiche Lorraine", "Hachis Parmentier express",
-    "Saucisse de Morteau et Pommes vapeur", "Omelette au fromage",
-    "Pavé de saumon et Haricots verts", "Œufs au plat et Ratatouille",
-    "Boulettes de bœuf et Coquillettes", "Galettes complète (Jambon, Œuf)",
-    "Pâtes au pesto", "Salade Niçoise", "Cordon bleu et Coquillettes"
+// --- LES STOCKS XXL ---
+const proteines = [
+    "Steak haché", "Pavé de saumon", "Filet de poulet", "Saucisses", "Filet de lieu", 
+    "Côte de porc", "Jambon blanc", "Omelette", "Boulettes de bœuf", "Cordon bleu", 
+    "Magret de canard", "Escalope de veau", "Crevettes", "Œufs au plat", "Thon en boîte", 
+    "Aiguillettes de canard", "Poisson pané", "Nuggets maison", "Tranche de gigot", 
+    "Pavé de cabillaud", "Sardines à l'huile", "Bacon grillé", "Dés de jambon cru",
+    "Boudin noir", "Aile de raie", "Brochettes de dinde", "Filet mignon"
 ];
 
-const platsLongs = [
-    "Blanquette de veau et Riz pilaf", "Bœuf Bourguignon",
-    "Gratin Dauphinois et Rôti de porc", "Lasagnes maison",
-    "Pot-au-feu traditionnel", "Petit salé aux lentilles",
-    "Tomates farcies et Riz", "Ratatouille maison",
-    "Choucroute garnie", "Navarin d'agneau",
-    "Endives au jambon et Béchamel", "Gratin de chou-fleur au jambon",
-    "Poulet basquaise", "Moussaka", "Carbonnade Flamande",
-    "Osso Buco et Tagliatelles", "Magret de canard et Gratin",
-    "Parmentier de canard", "Coq au vin", "Veau Marengo",
-    "Lapin à la moutarde", "Brandade de morue", "Cassoulet",
-    "Tartiflette", "Confit de canard", "Bouchées à la reine",
-    "Soupe à l'oignon gratinée", "Paëlla maison", "Couscous royal"
+const feculents = [
+    "Pâtes", "Riz blanc", "Pommes de terre sautées", "Purée maison", "Lentilles", 
+    "Coquillettes", "Semoule", "Frites", "Quinoa", "Petits pois", "Blé (Ebly)", 
+    "Gratin dauphinois", "Riz pilaf", "Gnocchis", "Polenta", "Boulgour", "Pommes de terre à l'eau",
+    "Penne au beurre", "Tagliatelles", "Purée de patate douce", "Haricots blancs", "Riz cantonais"
+];
+
+const legumes = [
+    "Haricots verts", "Épinards", "Ratatouille", "Salade verte", "Carottes", 
+    "Chou-fleur", "Brocolis", "Poivrons sautés", "Courgettes", "Fondue de poireaux", 
+    "Petits légumes vapeur", "Tomates provençales", "Champignons de Paris", 
+    "Purée de potiron", "Aubergines grillées", "Salade de tomates", "Poêlée paysanne",
+    "Asperges", "Céleri branche", "Choux de Bruxelles", "Endives braisées"
+];
+
+const platsMijotes = [
+    "Blanquette de veau", "Bœuf Bourguignon", "Lasagnes maison", "Hachis Parmentier",
+    "Couscous", "Paëlla", "Tartiflette", "Pot-au-feu", "Cassoulet", "Moussaka", 
+    "Chili con carne", "Cannellonis", "Gratin de pâtes", "Poulet Basquaise", 
+    "Osso Buco", "Carbonnade flamande", "Risotto aux champignons", "Petit salé aux lentilles",
+    "Veau Marengo", "Quiche aux poireaux", "Endives au jambon", "Petit salé aux lentilles",
+    "Rougail saucisse", "Navarin d'agneau", "Tajine de poulet"
 ];
 
 function genererMenu() {
     const zone = document.getElementById('resultat');
-    const tousLesPlats = [
-        ...platsRapides.map(p => ({ nom: p, type: 'Rapide', couleur: '#27ae60', icone: '⚡' })),
-        ...platsLongs.map(p => ({ nom: p, type: 'Mijoté', couleur: '#2980b9', icone: '🥘' }))
-    ];
+    let selectionActuelle = [];
     
-    const melange = tousLesPlats.sort(() => Math.random() - 0.5);
-    const selection = melange.slice(0, 12);
-
+    // On prépare la grille
     let htmlFinal = '<div class="grid-container">';
 
-    selection.forEach(plat => {
-        const lienGoogle = `https://www.google.com/search?q=recette+facile+${encodeURIComponent(plat.nom)}`;
+    for (let i = 0; i < 12; i++) {
+        let nomPlat = "";
+        let type = "";
+        let couleur = "";
+        let tentative = 0;
+
+        do {
+            // Environ 30% de plats "complets" (Mijotés)
+            if (i % 3 === 0) {
+                nomPlat = platsMijotes[Math.floor(Math.random() * platsMijotes.length)];
+                type = "Mijoté";
+                couleur = "#2980b9";
+            } else {
+                // Assemblage de 3 éléments indépendants
+                const p = proteines[Math.floor(Math.random() * proteines.length)];
+                const f = feculents[Math.floor(Math.random() * feculents.length)];
+                const l = legumes[Math.floor(Math.random() * legumes.length)];
+                nomPlat = `${p} + ${f} + ${l}`;
+                type = "Rapide";
+                couleur = "#27ae60";
+            }
+            tentative++;
+        // Évite les doublons sur la même page
+        } while (selectionActuelle.includes(nomPlat) && tentative < 100);
+
+        selectionActuelle.push(nomPlat);
+
+        const lienGoogle = `https://www.google.com/search?q=recette+facile+${encodeURIComponent(nomPlat)}`;
         
         htmlFinal += `
             <div class="card-idee">
-                <span class="badge" style="background: ${plat.couleur};">
-                    ${plat.icone} ${plat.type}
-                </span>
-                <h3>${plat.nom}</h3>
-                <a href="${lienGoogle}" target="_blank" class="btn-google" style="color: ${plat.couleur}; border-color: ${plat.couleur};">
-                    Recette Google
-                </a>
-            </div>
-        `;
-    });
+                <span class="badge" style="background: ${couleur};"> ${type} </span>
+                <h3 style="margin-top: 25px;">${nomPlat}</h3>
+                <a href="${lienGoogle}" target="_blank" class="btn-google" style="color: ${couleur}; border-color: ${couleur};">Idée recette</a>
+            </div>`;
+    }
     
-    zone.innerHTML = htmlFinal + '</div>';
+    htmlFinal += '</div>';
+    zone.innerHTML = htmlFinal;
 }
 
 document.getElementById('btn-generer').addEventListener('click', genererMenu);
