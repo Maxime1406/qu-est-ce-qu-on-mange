@@ -4,7 +4,7 @@ const proteines = [
     "Côte de porc", "Jambon blanc", "Omelette", "Boulettes de bœuf", "Cordon bleu", 
     "Magret de canard", "Escalope de veau", "Crevettes", "Œufs au plat", "Thon en boîte", 
     "Aiguillettes de canard", "Poisson pané", "Nuggets maison", "Tranche de gigot", 
-    "Pavé de cabillaud", "Sardines à l'huile", "Bacon grillé", "Dés de jambon cru",
+    "Pavé de cabillaud", "Bacon grillé", "Dés de jambon cru",
     "Boudin noir", "Aile de raie", "Brochettes de dinde", "Filet mignon"
 ];
 
