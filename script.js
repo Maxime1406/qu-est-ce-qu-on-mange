@@ -1,4 +1,3 @@
-// --- LES PROTEINES (35 options) ---
 const proteines = [
     "Steak haché", "Pavé de saumon", "Filet de poulet", "Saucisses", "Filet de lieu", 
     "Côte de porc", "Jambon blanc", "Omelette", "Boulettes de bœuf", "Cordon bleu", 
@@ -10,7 +9,6 @@ const proteines = [
     "Colin d'Alaska", "Cuisses de poulet", "Rôti de porc froid"
 ];
 
-// --- LES FECULENTS (30 options) ---
 const feculents = [
     "Pâtes", "Riz blanc", "Pommes de terre sautées", "Purée maison", "Lentilles", 
     "Coquillettes", "Semoule", "Frites", "Quinoa", "Petits pois", "Blé (Ebly)", 
@@ -20,7 +18,6 @@ const feculents = [
     "Tortellini", "Pomme au four", "Riz sauvage"
 ];
 
-// --- LES LEGUMES (35 options) ---
 const legumes = [
     "Haricots verts", "Épinards", "Ratatouille", "Salade verte", "Carottes", 
     "Chou-fleur", "Brocolis", "Poivrons sautés", "Courgettes", "Fondue de poireaux", 
@@ -42,13 +39,13 @@ const platsMijotes = [
     "Lapin à la moutarde", "Axoa de veau", "Gratin de chou-fleur", "Potée auvergnate"
 ];
 
-// Fonction pour vérifier si deux aliments sont compatibles
 function estCompatible(item1, item2) {
-    const motsInterdits = ["purée", "pomme de terre", "p.d.t", "riz", "chou", "pâtes"];
-    
+    const motsInterdits = ["purée", "pomme de terre", "p.d.t", "riz", "chou", "pâtes", "lentilles"];
+    const s1 = item1.toLowerCase();
+    const s2 = item2.toLowerCase();
     for (let mot of motsInterdits) {
-        if (item1.toLowerCase().includes(mot) && item2.toLowerCase().includes(mot)) {
-            return false; // Trop similaire (ex: deux purées)
+        if (s1.includes(mot) && s2.includes(mot)) {
+            return false; 
         }
     }
     return true;
@@ -56,6 +53,7 @@ function estCompatible(item1, item2) {
 
 function genererMenu() {
     const zone = document.getElementById('resultat');
+    zone.innerHTML = "";
     let selectionActuelle = [];
     let htmlFinal = '<div class="grid-container">';
 
@@ -75,13 +73,12 @@ function genererMenu() {
                 const f = feculents[Math.floor(Math.random() * feculents.length)];
                 const l = legumes[Math.floor(Math.random() * legumes.length)];
 
-                // On vérifie que le féculent et le légume ne sont pas trop proches
                 if (estCompatible(f, l)) {
-                    nomPlat = `${p} + ${f} + ${l}`;
+                    nomPlat = p + " + " + f + " + " + l;
                     type = "Rapide";
                     couleur = "#27ae60";
                 } else {
-                    nomPlat = "";
+                    nomPlat = ""; 
                 }
             }
             tentative++;
@@ -89,16 +86,14 @@ function genererMenu() {
 
         if (nomPlat !== "") {
             selectionActuelle.push(nomPlat);
-            const lienGoogle = `https://www.google.com/search?q=recette+facile+${encodeURIComponent(nomPlat)}`;
-            htmlFinal += `
-                <div class="card-idee">
-                    <span class="badge" style="background: ${couleur};"> ${type} </span>
-                    <h3 style="margin-top: 25px;">${nomPlat}</h3>
-                    <a href="${lienGoogle}" target="_blank" class="btn-google" style="color: ${couleur}; border-color: ${couleur};">Idée recette</a>
-                </div>`;
+            const lienGoogle = "https://www.google.com/search?q=recette+facile+" + encodeURIComponent(nomPlat);
+            htmlFinal += '<div class="card-idee">' +
+                '<span class="badge" style="background: ' + couleur + ';"> ' + type + ' </span>' +
+                '<h3 style="margin-top: 25px;">' + nomPlat + '</h3>' +
+                '<a href="' + lienGoogle + '" target="_blank" class="btn-google" style="color: ' + couleur + '; border-color: ' + couleur + ';">Idée recette</a>' +
+                '</div>';
         }
     }
-    
     zone.innerHTML = htmlFinal + '</div>';
 }
 
