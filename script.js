@@ -59,7 +59,7 @@ function genererMenu() {
     let selectionActuelle = [];
     let htmlFinal = '<div class="grid-container">';
 
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 12; i++) {
         let nomPlat = "";
         let type = "";
         let couleur = "";
