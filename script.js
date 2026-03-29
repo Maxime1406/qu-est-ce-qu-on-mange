@@ -42,52 +42,64 @@ const platsMijotes = [
     "Lapin à la moutarde", "Axoa de veau", "Gratin de chou-fleur", "Potée auvergnate"
 ];
 
+// Fonction pour vérifier si deux aliments sont compatibles
+function estCompatible(item1, item2) {
+    const motsInterdits = ["purée", "pomme de terre", "p.d.t", "riz", "chou", "pâtes"];
+    
+    for (let mot of motsInterdits) {
+        if (item1.toLowerCase().includes(mot) && item2.toLowerCase().includes(mot)) {
+            return false; // Trop similaire (ex: deux purées)
+        }
+    }
+    return true;
+}
+
 function genererMenu() {
     const zone = document.getElementById('resultat');
     let selectionActuelle = [];
-    
-    // On prépare la grille
     let htmlFinal = '<div class="grid-container">';
 
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 14; i++) {
         let nomPlat = "";
         let type = "";
         let couleur = "";
         let tentative = 0;
 
         do {
-            // Environ 30% de plats "complets" (Mijotés)
             if (i % 3 === 0) {
                 nomPlat = platsMijotes[Math.floor(Math.random() * platsMijotes.length)];
                 type = "Mijoté";
                 couleur = "#2980b9";
             } else {
-                // Assemblage de 3 éléments indépendants
                 const p = proteines[Math.floor(Math.random() * proteines.length)];
                 const f = feculents[Math.floor(Math.random() * feculents.length)];
                 const l = legumes[Math.floor(Math.random() * legumes.length)];
-                nomPlat = `${p} + ${f} + ${l}`;
-                type = "Rapide";
-                couleur = "#27ae60";
+
+                // On vérifie que le féculent et le légume ne sont pas trop proches
+                if (estCompatible(f, l)) {
+                    nomPlat = `${p} + ${f} + ${l}`;
+                    type = "Rapide";
+                    couleur = "#27ae60";
+                } else {
+                    nomPlat = "";
+                }
             }
             tentative++;
-        // Évite les doublons sur la même page
-        } while (selectionActuelle.includes(nomPlat) && tentative < 100);
+        } while ((nomPlat === "" || selectionActuelle.includes(nomPlat)) && tentative < 100);
 
-        selectionActuelle.push(nomPlat);
-
-        const lienGoogle = `https://www.google.com/search?q=recette+facile+${encodeURIComponent(nomPlat)}`;
-        
-        htmlFinal += `
-            <div class="card-idee">
-                <span class="badge" style="background: ${couleur};"> ${type} </span>
-                <h3 style="margin-top: 25px;">${nomPlat}</h3>
-                <a href="${lienGoogle}" target="_blank" class="btn-google" style="color: ${couleur}; border-color: ${couleur};">Idée recette</a>
-            </div>`;
+        if (nomPlat !== "") {
+            selectionActuelle.push(nomPlat);
+            const lienGoogle = `https://www.google.com/search?q=recette+facile+${encodeURIComponent(nomPlat)}`;
+            htmlFinal += `
+                <div class="card-idee">
+                    <span class="badge" style="background: ${couleur};"> ${type} </span>
+                    <h3 style="margin-top: 25px;">${nomPlat}</h3>
+                    <a href="${lienGoogle}" target="_blank" class="btn-google" style="color: ${couleur}; border-color: ${couleur};">Idée recette</a>
+                </div>`;
+        }
     }
     
-    htmlFinal += '</div>';
-    zone.innerHTML = htmlFinal;
+    zone.innerHTML = htmlFinal + '</div>';
 }
 
 document.getElementById('btn-generer').addEventListener('click', genererMenu);
